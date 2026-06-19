@@ -1,0 +1,6 @@
+Model,MAE,RMSE
+Advanced LightGBM,1.18,2.46
+Linear Regression,1.2,2.5
+Basic LightGBM,1.2,2.49
+Random Forest,1.21,2.47
+Prophet,12.0,17.04
