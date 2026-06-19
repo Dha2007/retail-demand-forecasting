@@ -5,18 +5,22 @@ import pandas as pd
 import numpy as np
 import pickle
 import warnings
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 warnings.filterwarnings("ignore")
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 app = FastAPI(title="Retail Demand Forecasting API",
               description="Predict product demand and get inventory recommendations",
               version="1.0")
 
 # Load model
-with open("../models/advanced_lgbm_model.pkl", "rb") as f:
+with open(os.path.join(BASE_DIR, "models", "advanced_lgbm_model.pkl"), "rb") as f:
     model = pickle.load(f)
 
 # Load inventory data
-inventory_df = pd.read_csv("../data/inventory_optimization.csv")
+inventory_df = pd.read_csv(os.path.join(BASE_DIR, "data", "inventory_optimization.csv"))
 
 
 class DemandInput(BaseModel):
