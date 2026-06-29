@@ -24,6 +24,7 @@ page = st.sidebar.selectbox(
         "Demand Forecasting",
         "Price & Promotions",
         "Inventory Optimization",
+        "Reorder Alerts",
     ],
 )
 
@@ -179,3 +180,40 @@ elif page == "Inventory Optimization":
     sample = abc.sample(min(2000, len(abc)), random_state=42)
     fig3 = px.scatter(sample, x="avg_daily_demand", y="reorder_point", color="abc_class")
     st.plotly_chart(fig3, use_container_width=True)
+
+# -------------------------------------------------------------- REORDER ALERTS --
+elif page == "Reorder Alerts":
+    st.header("🚨 Reorder Alerts & Revenue Forecast")
+
+    reorder_schedule = load_csv("reorder_schedule.csv")
+    revenue_forecast = load_csv("revenue_forecast_30days.csv")
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        urgent = (reorder_schedule["priority"] == "Urgent").sum()
+        st.metric("Urgent Reorders", urgent)
+    with col2:
+        soon = (reorder_schedule["priority"] == "Soon").sum()
+        st.metric("Reorder Soon", soon)
+    with col3:
+        total_rev = revenue_forecast["total_monthly_revenue"].sum()
+        st.metric("30-Day Revenue Forecast", f"${total_rev:,.0f}")
+
+    st.divider()
+
+    st.subheader("Top 15 Urgent Reorder Items")
+    urgent_items = reorder_schedule[reorder_schedule["priority"] == "Urgent"].nsmallest(
+        15, "days_until_reorder")[
+        ["item_id", "store_id", "cat_id", "order_quantity", "days_until_reorder"]]
+    st.dataframe(urgent_items, use_container_width=True)
+
+    st.subheader("30-Day Revenue Forecast by Category")
+    fig = px.bar(revenue_forecast, x="cat_id", y="total_monthly_revenue", color="cat_id")
+    st.plotly_chart(fig, use_container_width=True)
+
+    st.subheader("Reorder Priority Distribution")
+    priority_counts = reorder_schedule["priority"].value_counts().reset_index()
+    priority_counts.columns = ["priority", "count"]
+    fig2 = px.bar(priority_counts, x="priority", y="count", color="priority",
+                  color_discrete_map={"Urgent": "#DC2626", "Soon": "#F59E0B", "Normal": "#059669"})
+    st.plotly_chart(fig2, use_container_width=True)
