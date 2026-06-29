@@ -1,0 +1,10 @@
+{
+    "total_items_optimized": 30490,
+    "total_stores": 10,
+    "total_states": 3,
+    "total_categories": 3,
+    "urgent_reorders": 224,
+    "total_30day_revenue": 2917079.15,
+    "best_model": "Advanced LightGBM",
+    "best_model_mae": 1.18
+}
